@@ -1,5 +1,4 @@
 import json
-import datetime
 
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
@@ -9,11 +8,10 @@ from django.contrib.auth.models import User
 from django.core.serializers import serialize
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
-
 from django.template import RequestContext
+from app.forms import EditProfileForm
 
 from app.models import Post, UserProfile, Comment
-
 from app.utils import compose_and_save_avatar, create_avatar_placeholder
 
 
@@ -71,7 +69,12 @@ def edit_profile(request):
         userprofile.fullname = request.POST['fullname']
         userprofile.username = request.POST['username']
         userprofile.about = request.POST['about']
+        userprofile.hour_start = request.POST['timeStart']
+        userprofile.hour_span = request.POST['timeSpan']
 
+        form = EditProfileForm(request.POST, request.FILES)
+        print(form.is_valid())
+        print(form.errors)
         if request.FILES.get('avatar', None):
             userprofile.avatar = request.FILES['avatar']
             userprofile.save()
@@ -176,14 +179,16 @@ def unfollow(request):
 def followers(request, pk=None):
     user = get_user(pk, request)
     followers = user.profile.followers.all()
-    return render_to_response('jay/followers.html', {'followers': followers, 'user_data': user}, RequestContext(request))
+    return render_to_response('jay/followers.html', {'followers': followers, 'user_data': user},
+                              RequestContext(request))
 
 
 @login_required
 def following(request, pk=None):
     user = get_user(pk, request)
     following = user.profile.following.all()
-    return render_to_response('jay/following.html', {'following': following, 'user_data': user}, RequestContext(request))
+    return render_to_response('jay/following.html', {'following': following, 'user_data': user},
+                              RequestContext(request))
 
 
 @login_required
@@ -231,10 +236,10 @@ def manage_post(request):
     elif request.method == 'POST':  # Button add post was clicked
         post = Post.objects.get(pk=request.POST['pk']) if request.POST['pk'] else Post(user=request.user)
 
-        post.title = request.POST['title']
-        post.content = request.POST['content']
+        if 'content' in request.POST:
+            post.content = request.POST['content']
+            post.save()
 
-        post.save()
         return HttpResponseRedirect('/post/' + str(post.pk))
 
 

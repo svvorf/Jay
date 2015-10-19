@@ -1,45 +1,71 @@
 {% extends 'jay/base.html' %}
 {% block title %}Edit profile{% endblock %}
 {% load static %}
+
 {% block body_block %}
-     <form class="form-horizontal" action="." method="post" enctype="multipart/form-data" data-parsley-validate>
-     {% csrf_token %}
-    <div  class="form-group">
-        <label for="inputUsername" class="col-sm-2 control-label required">Username</label>
-        <div class="col-sm-10">
-            <input type="text" name="username" class="form-control" id="inputUsername" data-parsley-required data-parsley-length="[3, 20]" value="{{ user.profile.username }}">
+    <form class="form-horizontal" action="." method="post" enctype="multipart/form-data" data-parsley-validate>
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="inputUsername" class="col-sm-2 control-label required">Username</label>
+
+            <div class="col-sm-10">
+                <input type="text" name="username" class="form-control" id="inputUsername" data-parsley-required
+                       data-parsley-length="[3, 20]" value="{{ user.profile.username }}">
+            </div>
         </div>
-    </div>
-     <div  class="form-group">
-        <label for="inputFullname" class="col-sm-2 control-label">Full name</label>
-        <div class="col-sm-10">
-            <input type="text" name="fullname" class="form-control" id="inputFullname" value="{{ user.profile.fullname }}">
+        <div class="form-group">
+            <label for="inputFullname" class="col-sm-2 control-label">Full name</label>
+
+            <div class="col-sm-10">
+                <input type="text" name="fullname" class="form-control" id="inputFullname"
+                       value="{{ user.profile.fullname }}">
+            </div>
         </div>
-    </div>
-     <div  class="form-group">
-        <label for="inputAbout" class="col-sm-2 control-label">Bio</label>
-        <div class="col-sm-10">
-            <textarea name="about" class="form-control" id="inputAbout" rows="6">{{ user.profile.about }}</textarea>
+        <div class="form-group">
+            <label for="inputAbout" class="col-sm-2 control-label">Bio</label>
+
+            <div class="col-sm-10">
+                <textarea name="about" class="form-control" id="inputAbout" rows="6">{{ user.profile.about }}</textarea>
+            </div>
         </div>
-    </div>
-     <div  class="form-group">
-        <label for="inputAvatar" class="col-sm-2 control-label">Avatar</label>
-        <div class="col-sm-8">
-            <div class="input-group">
+        <div class="form-group">
+            <label for="inputAvatar" class="col-sm-2 control-label">Avatar</label>
+
+            <div class="col-sm-8">
+                <div class="input-group">
                 <span class="input-group-btn">
-                    <span class="btn btn-primary btn-file">
+                    <span class="btn btn-info btn-file">
                         Browse <input type="file" name="avatar">
                     </span>
                 </span>
-                <input type="text" id="inputAvatar" class="form-control" readonly>
+                    <input type="text" id="inputAvatar" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <img src="/media/avatars/{{ user.pk }}_small.jpg" class="img-responsive"/>
             </div>
         </div>
-        <div class="col-sm-2">
-            <img src="/media/avatars/{{ user.pk }}_small.jpg" class="img-responsive" />
+
+        <div class="form-group">
+            <label for="timeSpan" class="col-sm-2 control-label">Posting time</label>
+
+            <div class="col-sm-10">
+                From
+                <button id="time-start" class="btn btn-default" data-jq-dropdown="#time-start-dropdown">
+                    {% if user.profile.hour_start < 10 %}0{% endif %}{{ user.profile.hour_start }}:00
+                </button>
+                during
+                <button id="time-span" class="btn btn-default"
+                        data-jq-dropdown="#time-span-dropdown">{{ user.profile.hour_span }} hours
+                </button>
+            </div>
+            <input type="hidden" id="timeStart" name="timeStart" value="{{ user.profile.hour_start }}"/>
+            <input type="hidden" id="timeSpan" name="timeSpan" value="{{ user.profile.hour_span }}"/>
         </div>
-    </div>
-    {% if changed %} <p>Changes saved.</p> {% endif %}
-    <div class="col-md-offset-2"><button class="btn btn-default">Save</button></div>
+        {% if changed %} <p>Changes saved.</p> {% endif %}
+        <div class="col-md-offset-2">
+            <button class="btn btn-primary">Save</button>
+        </div>
     </form>
 
 
@@ -55,6 +81,30 @@
             input.trigger('fileselect', [numFiles, label]);
         });
 
+        function setupDropdowns() {
+            var startDropdown = $('#time-start-dropdown').find('.jq-dropdown-menu');
+            for (var i = 1; i <= 23; i++) {
+                var time = (i < 10 ? "0" + i : "" + i) + ":00";
+                startDropdown.append("<li><a href='#' data-value='" + i + "'>" + time + "</a></li>");
+            }
+            var spanDropdown = $('#time-span-dropdown').find('.jq-dropdown-menu');
+            for (var j = 1; j <= 6; j++) {
+                spanDropdown.append("<li><a href='#' data-value='" + j + "'>" + j + " hours</a></li>");
+            }
+
+            var timeStartButton = $('#time-start');
+            var timeSpanButton = $('#time-span');
+            var hiddenTimeStart = $('#timeStart');
+            var hiddenTimeSpan = $('#timeSpan');
+            startDropdown.find('li > a').click(function () {
+                timeStartButton.text($(this).text());
+                hiddenTimeStart.val($(this).attr("data-value"));
+            });
+            spanDropdown.find('li > a').click(function () {
+                timeSpanButton.text($(this).text());
+                hiddenTimeSpan.val($(this).attr("data-value"));
+            });
+        }
         $(document).ready(function () {
             $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
 
@@ -68,13 +118,30 @@
                 }
 
             });
+
+            setupDropdowns();
         });
     </script>
 
     <script src="{% static 'js/parsley.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.dropdown.js' %}"></script>
 {% endblock %}
 
+{% block styles %}
+    <link type="text/css" rel="stylesheet" href="{% static 'css/jquery.dropdown.min.css' %}"/>
+{% endblock %}
 
 {% block sidebar %}
-   {% include 'jay/sidebar.html' %}
+    {% include 'jay/sidebar.html' %}
+{% endblock %}
+
+{% block body_bottom %}
+    <div id="time-start-dropdown" class="jq-dropdown jq-dropdown-scroll">
+        <ul class="jq-dropdown-menu">
+        </ul>
+    </div>
+    <div id="time-span-dropdown" class="jq-dropdown">
+        <ul class="jq-dropdown-menu">
+        </ul>
+    </div>
 {% endblock %}

@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from app import config
 
 
 def content_file_name(instance, filename):
@@ -15,8 +17,10 @@ class UserProfile(models.Model):
 
     following = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='followers')
 
-    friends = models.ManyToManyField('self', blank=True)
-    outgoing_requests = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='incoming')
+    hour_start = models.IntegerField(default=config.DEFAULT_TIME_START,
+                                     validators=[MaxValueValidator(23), MinValueValidator(0)])
+    hour_span = models.IntegerField(default=config.DEFAULT_TIME_SPAN,
+                                    validators=[MinValueValidator(1), MaxValueValidator(config.MAX_TIME_SPAN)])
 
     def __unicode__(self):
         return self.user.username

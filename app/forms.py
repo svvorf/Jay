@@ -29,6 +29,12 @@ class SignUpForm(UserCreationForm):
         return user
 
 
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ()
+
+
 class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
