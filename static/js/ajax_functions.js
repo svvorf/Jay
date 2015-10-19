@@ -103,7 +103,7 @@ $(document).ready(function(){
 
             $('#comments_'+post_id).append(
                 "<div class='comment' id='comment_"+comment_id+"'>" +
-                    "<a href='/profile/"+obj.user+"'><img src='/media/avatars/"+ obj.user + "_small.jpg' />" +
+                    "<a href='/profile/"+obj.user+"'><img src='/media/avatars/"+ obj.user + "_small.png' />" +
                     obj.first_name + " " + obj.last_name + "</a>" +
                     "<div class='comment_text'>" + obj.text + "</div>" +
                     "<p class='timestamp'>" + datetimeString + "</p>" +

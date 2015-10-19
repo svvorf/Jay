@@ -2,7 +2,7 @@
         onclick="window.location='/manage_post/?action=add'"><strong>Today I...</strong></button>
 <div class="well">
     {% with userdata=user_data|default:user %}
-        <img src="/media/avatars/{{ userdata.pk }}_med.jpg" class="img-responsive center-block"/>
+        <img src="/media/avatars/{{ userdata.pk }}_med.png" class="img-responsive center-block"/>
 
         <p class="text-center">
             <span class="username">{{ userdata.profile.username }}</span>

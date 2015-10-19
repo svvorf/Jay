@@ -18,7 +18,7 @@ def compose_and_save_avatar(pk):
     width, height = img.size
     ratio = width / height
 
-    img.save(img_path + "_full.jpg", "JPEG")
+    img.save(img_path + "_full.png", "PNG")
 
     if ratio < 1:
         new_small_size = (small * ratio, small)
@@ -28,17 +28,17 @@ def compose_and_save_avatar(pk):
         new_med_size = (medium, medium * ratio)
 
     img.thumbnail(new_med_size, Image.ANTIALIAS)
-    img.save(img_path + '_med.jpg', "JPEG", quality=95)
+    img.save(img_path + '_med.png', "PNG")
 
     img.thumbnail(new_small_size, Image.ANTIALIAS)
-    img.save(img_path + '_small.jpg', 'JPEG', quality=95)
+    img.save(img_path + '_small.png', 'PNG')
 
     os.remove(img_path)
 
 
 def create_avatar_placeholder(pk):
-    copyfile(media_root + 'avatars/no_med.jpg', media_root + 'avatars/' + str(pk) + '_med.jpg')
-    copyfile(media_root + 'avatars/no_small.jpg', media_root + 'avatars/' + str(pk) + '_small.jpg')
+    copyfile(media_root + 'avatars/no_med.png', media_root + 'avatars/' + str(pk) + '_med.png')
+    copyfile(media_root + 'avatars/no_small.png', media_root + 'avatars/' + str(pk) + '_small.png')
 
 
 

@@ -21,7 +21,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'otu',  # Or path to database file if using sqlite3.
+        'NAME': 'jay',  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'ivan',
         'PASSWORD': 'pk10mg',
@@ -59,7 +59,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = '/home/ivan/Projects/Jay/media/'
+MEDIA_ROOT = 'C:/Users/ivan/Projects/Jay/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.

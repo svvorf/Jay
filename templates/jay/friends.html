@@ -13,7 +13,7 @@
             {% for friend in friends %}
                 {% for friend in friends %}
                     <a href="/profile/{{ friend.user.pk }}">
-                        <img src="/media/avatars/{{ friend.user.pk }}_small.jpg"/>
+                        <img src="/media/avatars/{{ friend.user.pk }}_small.png"/>
                         {{ friend.user.first_name }} {{ friend.user.last_name }}
                     </a>
                 {% endfor %}
